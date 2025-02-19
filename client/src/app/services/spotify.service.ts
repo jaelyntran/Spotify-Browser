@@ -18,8 +18,6 @@ export class SpotifyService {
   private sendRequestToExpress(endpoint:string):Promise<any> {
     var uri:string = `${this.expressBaseUrl}${endpoint}`;
 
-    //firstValueFrom generates a Promise for whatever is returned first from the GET request.
-    //You shouldn't need to update this part.
     return firstValueFrom(this.http.get(uri)).then((response) => {
       return response;
     }, (err) => {
@@ -28,7 +26,6 @@ export class SpotifyService {
   }
 
   aboutMe():Promise<ProfileData> {
-    //This line is sending a request to express, which returns a promise with some data. We're then parsing the data 
     return this.sendRequestToExpress('/me').then((data) => {
       console.log('Response data from /me:', data);
       return new ProfileData(data);

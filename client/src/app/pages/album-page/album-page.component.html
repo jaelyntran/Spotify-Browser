@@ -4,7 +4,7 @@
 			<h1>{{ album.name }}</h1>
 			<img id="albumImg" src="{{ album.imageURL }}" alt="Image of album: {{ album.name }}">
             <app-thermometer [popularity]="album.popularity"></app-thermometer>
-			<p *ngFor="let artist of album.artists; let i = index">
+			<p *ngFor="let artist of album.artists">
 				Artist: <a [routerLink]="['/artist', artist.id]">{{ artist.name }}</a>
 			</p>
 			<p>
