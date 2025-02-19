@@ -25,8 +25,8 @@ export class ArtistPageComponent implements OnInit {
       //TODO: Inject the spotifyService and use it to get the artist data, top tracks for the artist, and the artist's albums
       this.spotifyService.getArtist(this.artistId).then((artist:ArtistData) => {
               this.artist = artist;
-          }
-      ).catch(error => {
+
+      }).catch(error => {
           console.log("Failed to fetch artist data: ", error);
       })
       this.spotifyService.getTopTracksForArtist(this.artistId).then((topTracks:TrackData[]) => {
