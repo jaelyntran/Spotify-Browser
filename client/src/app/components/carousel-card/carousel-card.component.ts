@@ -1,5 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ResourceData } from '../../data/resource-data';
+import {ArtistData} from "../../data/artist-data";
+import {TrackListComponent} from "../track-list/track-list.component";
+import {AlbumData} from "../../data/album-data";
 
 @Component({
     selector: 'app-carousel-card',
@@ -12,7 +15,15 @@ export class CarouselCardComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
+  get resourceLink() : string {
+      if (this.resource instanceof ArtistData) {
+          return `/artist/${this.resource.id}`;
+      } else if (this.resource instanceof AlbumData) {
+          return `/album/${this.resource.id}`;
+      } else {
+          return '';
+      }
+  }
 }

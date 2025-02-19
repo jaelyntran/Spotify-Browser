@@ -16,8 +16,6 @@ export class SpotifyService {
   constructor(private http:HttpClient) { }
 
   private sendRequestToExpress(endpoint:string):Promise<any> {
-    //TODO: use the injected http Service to make a get request to the Express endpoint and return the response.
-    //Specifically, update the URI according to the base URL for express and the endpoint.
     var uri:string = `${this.expressBaseUrl}${endpoint}`;
 
     //firstValueFrom generates a Promise for whatever is returned first from the GET request.
@@ -38,41 +36,69 @@ export class SpotifyService {
   }
 
   searchFor(category:string, resource:string):Promise<ResourceData[]> {
-    //TODO: identify the search endpoint in the express webserver (routes/index.js) and send the request to express.
-    //Make sure you're encoding the resource with encodeURIComponent().
-    //Depending on the category (artist, track, album), return an array of that type of data.
-    //JavaScript's "map" function might be useful for this, but there are other ways of building the array.
-    return null as any;
+    const encodedResource = encodeURIComponent(resource);
+    return this.sendRequestToExpress(`/search/${category}/${encodedResource}`).then((data) => {
+      console.log('Received data:', data);
+
+      const categoryKey = category === 'artist' ? 'artists' :
+                                                category === 'album' ? 'albums' :
+                                                category === 'track' ? 'tracks' : null;
+
+      const items = data[categoryKey].items;
+      console.log('Items:', items);
+
+      return items.map((item: any) => {
+        if(category === 'artist') return new ArtistData(item);
+        if(category === 'album') return new AlbumData(item);
+        if(category === 'track') return new TrackData(item);
+        return null;
+      }).filter(Boolean);
+    });
   }
 
   getArtist(artistId:string):Promise<ArtistData> {
-    //TODO: use the artist endpoint to make a request to express.
-    //Again, you may need to encode the artistId.
-    return null as any;
+    const encodedArtistID = encodeURIComponent(artistId);
+    return this.sendRequestToExpress(`/artist/${encodedArtistID}`).then((data) => {
+      return new ArtistData(data);
+    })
   }
 
   getTopTracksForArtist(artistId:string):Promise<TrackData[]> {
-    //TODO: use the top tracks endpoint to make a request to express.
-    return null as any;
+    const encodedArtistID = encodeURIComponent(artistId);
+    return this.sendRequestToExpress(`/artist-top-tracks/${encodedArtistID}`).then((data) => {
+      return data.tracks.map((track: any) => new TrackData(track));
+    })
   }
 
   getAlbumsForArtist(artistId:string):Promise<AlbumData[]> {
     //TODO: use the albums for an artist endpoint to make a request to express.
-    return null as any;
+    const encodedArtistID = encodeURIComponent(artistId);
+    return this.sendRequestToExpress(`/artist-albums/${encodedArtistID}`).then((data) => {
+      return data.items.map((album: any) => new AlbumData(album));
+    })
   }
 
   getAlbum(albumId:string):Promise<AlbumData> {
     //TODO: use the album endpoint to make a request to express.
-    return null as any;
+    const encodedAlbumID = encodeURIComponent(albumId);
+    return this.sendRequestToExpress(`/album/${encodedAlbumID}`).then((data) => {
+      return new AlbumData(data);
+    })
   }
 
   getTracksForAlbum(albumId:string):Promise<TrackData[]> {
     //TODO: use the tracks for album endpoint to make a request to express.
-    return null as any;
+    const encodedAlbumID = encodeURIComponent(albumId);
+    return this.sendRequestToExpress(`/album-tracks/${encodedAlbumID}`).then((data) => {
+      return data.map((track: any) => new TrackData(track));
+    })
   }
 
   getTrack(trackId:string):Promise<TrackData> {
     //TODO: use the track endpoint to make a request to express.
-    return null as any;
+    const encodedTrackID = encodeURIComponent(trackId);
+    return this.sendRequestToExpress(`/track/${encodedTrackID}`).then((data) => {
+      return new TrackData(data);
+    })
   }
 }

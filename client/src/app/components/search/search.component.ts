@@ -13,18 +13,35 @@ import { ResourceData } from '../../data/resource-data';
     standalone: false
 })
 export class SearchComponent implements OnInit {
-  searchString:string;
-  searchCategory:string = 'artist';
-  searchCategories:string[] = ['artist', 'album', 'track'];
-  resources:ResourceData[];
+    searchString:string;
+    searchCategory:string = 'artist';
+    searchCategories:string[] = ['artist', 'album', 'track'];
+    resources:ResourceData[];
 
-  constructor(private spotifyService:SpotifyService) { }
+    constructor(private spotifyService:SpotifyService) { }
 
-  ngOnInit() {
-  }
+    ngOnInit() {}
 
-  search() {
-    //TODO: call search function in spotifyService and parse response
-  }
+    search() {
+        if (!this.searchString) {
+            return;
+        }
 
+        this.spotifyService.searchFor(this.searchCategory, this.searchString).then((results) => {
+            this.resources = results;
+        }).catch(error => {
+                console.log("Error searching: ", error);
+            });
+    }
+
+    resetSearch() {
+        // Reset search term and clear results
+        this.searchString = '';
+        this.resources = [];
+    }
+
+    onCategoryChange() {
+        // Reset search when category changes
+        this.resetSearch();
+    }
 }
